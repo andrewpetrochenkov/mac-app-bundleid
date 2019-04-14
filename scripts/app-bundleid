@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+usage() {
+    echo "usage: $(basename $0) app [value]" 1>&2
+    [[ $1 == "-h" ]] || [[ $1 == "--help" ]]; exit
+}
+
+[[ $1 == "-h" ]] || [[ $1 == "--help" ]] && usage "$@"
+
+[[ $# == 0 ]] || [[ $# -gt 2 ]] && usage
+
+[[ $# == 2 ]] && {
+    plist="$1"/Contents/Info.plist
+    grep -q "CFBundleIdentifier" "$plist" && {
+        /usr/libexec/PlistBuddy -c "Set CFBundleIdentifier '$2'" "$plist"; exit
+    }
+    /usr/libexec/PlistBuddy -c "Add CFBundleIdentifier string '$2'" "$plist"; exit
+}
+[ -e "$1" ] && {
+    basename="${1##*/}"
+    name="$(echo $basename | rev | cut -c5- | rev)"
+    set -- "$name"
+    # mdls -name kMDItemCFBundleIdentifier -r "$1" || exit; echo; exit;
+}
+# lsappinfo info -only bundleid Finder | cut -d '"' -f4
+osascript -e "id of app \"$1\""
