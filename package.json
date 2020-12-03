@@ -1,6 +1,6 @@
 {
   "name": "mac-app-bundleid",
-  "version": "2019.4.14",
+  "version": "2020.12.3",
   "description": "get/set macOS app Bundle ID",
   "keywords": [
     "mac",
